@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MintCarbon – Industry Dashboard</title>
+  <link rel="stylesheet" href="industry_style.css">
+</head>
+<body>
+
+<!-- ══ Login Overlay ══════════════════════════════════════════════════════════ -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>🏭 MintCarbon</h1>
+      <p>Industry Carbon Credit Portal</p>
+    </div>
+    <div class="login-body">
+      <div class="form-group">
+        <label>Company / Industry Name</label>
+        <input type="text" id="loginCompany" placeholder="e.g. GreenSteel Ltd." />
+      </div>
+      <div class="form-group">
+        <label>Wallet Address</label>
+        <input type="text" id="loginWallet" placeholder="0x..." />
+      </div>
+      <div class="form-group">
+        <label>Private Key</label>
+        <input type="password" id="loginKey" placeholder="0x..." />
+      </div>
+      <p class="login-hint">⚠️ Use Ganache test wallet keys only.</p>
+      <button class="btn btn-primary btn-full" onclick="doLogin()">🔓 Enter Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Dashboard ══════════════════════════════════════════════════════════════ -->
+<div class="dashboard-container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">
+      <h1>🏭 MintCarbon</h1>
+      <p>Industry Portal</p>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#" class="active" data-section="overview"><i class="icon">📊</i> Overview</a></li>
+        <li><a href="#" data-section="marketplace"><i class="icon">🛒</i> Marketplace</a></li>
+        <li><a href="#" data-section="purchases"><i class="icon">📋</i> My Purchases</a></li>
+        <li><a href="#" data-section="blockchain"><i class="icon">⛓️</i> Blockchain Status</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-status">
+      <div class="chain-indicator">
+        <span class="chain-dot" id="chainDot"></span>
+        <span id="chainStatusText">Checking…</span>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <button id="logoutBtn">🚪 Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Header -->
+    <header class="main-header">
+      <div>
+        <h2 id="companyName">Industry Dashboard</h2>
+        <p>Welcome back · <span id="walletDisplay">—</span></p>
+      </div>
+      <div class="header-badges">
+        <span class="badge-pill">💰 Price: <strong id="pricePerCredit">0.001 ETH</strong></span>
+      </div>
+    </header>
+
+    <!-- ── Overview Section ─────────────────────────────────────────────────── -->
+    <section id="overview" class="section active">
+      <h3 class="section-title">📊 Overview</h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <i class="icon">🌳</i>
+          <h4>Available Projects</h4>
+          <p class="stat-number" id="statProjects">0</p>
+        </div>
+        <div class="stat-card">
+          <i class="icon">🛒</i>
+          <h4>My Purchases</h4>
+          <p class="stat-number" id="statPurchases">0</p>
+        </div>
+        <div class="stat-card">
+          <i class="icon">💚</i>
+          <h4>Total Credits Owned</h4>
+          <p class="stat-number" id="statTotal">0</p>
+        </div>
+        <div class="stat-card">
+          <i class="icon">💎</i>
+          <h4>Total ETH Spent</h4>
+          <p class="stat-number" id="statEth">0.0000</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4>📝 Recent Purchases</h4>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Project</th>
+                <th>Credits (tCO₂)</th>
+                <th>Tx Hash</th>
+                <th>Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="recentPurchasesTbody">
+              <tr><td colspan="5" class="empty-state"><i class="icon">📥</i><p>No purchases yet. Go to Marketplace!</p></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Marketplace Section ──────────────────────────────────────────────── -->
+    <section id="marketplace" class="section">
+      <h3 class="section-title">🛒 Carbon Credit Marketplace</h3>
+      <p style="margin-bottom:1rem;color:#555;">Browse verified carbon projects and purchase credits to offset your emissions.</p>
+
+      <div class="filter-bar">
+        <input type="text" id="searchInput" placeholder="🔍 Search projects…" oninput="filterProjects()" />
+        <select id="filterState" onchange="filterProjects()">
+          <option value="">All States</option>
+        </select>
+      </div>
+
+      <div class="projects-grid" id="marketplaceGrid">
+        <div class="loading-card"><i class="icon">⏳</i><p>Loading verified projects…</p></div>
+      </div>
+    </section>
+
+    <!-- ── My Purchases Section ─────────────────────────────────────────────── -->
+    <section id="purchases" class="section">
+      <h3 class="section-title">📋 My Purchase History</h3>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Project</th>
+                <th>Credits</th>
+                <th>ETH Paid</th>
+                <th>Tx Hash</th>
+                <th>Block</th>
+                <th>Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="purchasesTbody">
+              <tr><td colspan="8" class="empty-state"><i class="icon">📥</i><p>No purchases yet.</p></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Blockchain Status Section ────────────────────────────────────────── -->
+    <section id="blockchain" class="section">
+      <h3 class="section-title">⛓️ Blockchain Status</h3>
+      <div id="blockchainInfo">
+        <div class="loading-card"><i class="icon">⏳</i><p>Fetching blockchain info…</p></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ══ Purchase Modal ═════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="purchaseModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>🛒 Purchase Carbon Credits</h3>
+      <button class="modal-close" onclick="closePurchaseModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="purchaseBanner" class="purchase-banner"></div>
+      <input type="hidden" id="purchaseProjectId" />
+
+      <div class="form-group">
+        <label>Number of Credits to Buy</label>
+        <input type="number" id="purchaseAmount" placeholder="e.g. 10" min="1" oninput="calcCost()" />
+      </div>
+      <div class="form-group">
+        <label>Your Private Key (Ganache)</label>
+        <input type="password" id="purchaseKey" placeholder="0x..." />
+      </div>
+      <div class="cost-box">
+        <span>💰 Total Cost:</span>
+        <strong id="totalCostDisplay">0.0000 ETH</strong>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closePurchaseModal()">Cancel</button>
+        <button class="btn btn-primary" id="confirmPurchaseBtn" onclick="confirmPurchase()">
+          ✅ Confirm Purchase
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Success Modal ══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-card">
+    <div class="modal-header success-header">
+      <h3>✅ Purchase Successful!</h3>
+    </div>
+    <div class="modal-body">
+      <div id="successDetail"></div>
+      <button class="btn btn-primary btn-full" style="margin-top:1.2rem" onclick="closeSuccessModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Error Modal ════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="errorModal">
+  <div class="modal-card">
+    <div class="modal-header error-header">
+      <h3>❌ Error</h3>
+    </div>
+    <div class="modal-body">
+      <p id="errorMsg" style="color:#c0392b;"></p>
+      <button class="btn btn-danger btn-full" style="margin-top:1.2rem" onclick="closeErrorModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer"></div>
+
+<script src="industry_app.js"></script>
+</body>
+</html>

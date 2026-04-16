@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MintCarbon - Login</title>
+    <link rel="stylesheet" href="Login.css">
+</head>
+<body>
+    <div class="login-page">
+        <!-- Floating background orbs -->
+        <div class="orb orb1"></div>
+        <div class="orb orb2"></div>
+        <div class="orb orb3"></div>
+
+        <div class="login-container">
+            <!-- TAB SWITCHER -->
+            <div class="tab-switcher">
+                <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Login</button>
+                <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Register</button>
+            </div>
+
+            <!-- LOGIN CARD -->
+            <div class="login-card" id="card-login">
+                <div class="login-header">
+                    <a href="/" class="logo-link">
+                        <div class="logo-badge">
+                            <span class="logo-icon">☘️</span>
+                            <h1>MintCarbon</h1>
+                        </div>
+                    </a>
+                    <h2>Welcome Back</h2>
+                    <p>Connect your wallet to continue to your dashboard</p>
+                </div>
+
+                <div class="login-body">
+                    <!-- Wallet Connection Section -->
+                    <div id="wallet-section">
+                        <button class="connect-wallet-btn" id="connect-wallet-btn" onclick="connectWallet('login')">
+                            <span class="btn-icon">🦊</span> Connect MetaMask Wallet
+                        </button>
+                    </div>
+
+                    <!-- Wallet Connected Section -->
+                    <div id="wallet-connected" class="wallet-connected" style="display: none;">
+                        <div class="wallet-info">
+                            <span class="wallet-label">Connected Wallet</span>
+                            <span class="wallet-address" id="wallet-address-display"></span>
+                        </div>
+                        <button class="change-wallet-btn" onclick="disconnectWallet()">Disconnect</button>
+                    </div>
+
+                    <!-- Role Selection -->
+                    <div class="role-selection">
+                        <label for="role-dropdown">Select Your Role</label>
+                        <select id="role-dropdown" class="role-dropdown" onchange="handleRoleChange()" disabled>
+                            <option value="">-- Select Role --</option>
+                            <option value="NGO">🌿 NGO</option>
+                            <option value="Industry">🏭 Industry</option>
+                            <option value="Panchayat">🏛️ Panchayat</option>
+                        </select>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div id="error-message" class="error-message" style="display: none;"></div>
+
+                    <!-- Login Button -->
+                    <button class="login-btn" id="login-btn" onclick="handleLogin()" disabled>
+                        Login to Dashboard
+                    </button>
+
+                    <div class="login-help">
+                        <p>New user? <a href="#" onclick="switchTab('register')">Register here</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REGISTER CARD -->
+            <div class="login-card" id="card-register" style="display:none;">
+                <div class="login-header">
+                    <a href="/" class="logo-link">
+                        <div class="logo-badge">
+                            <span class="logo-icon">☘️</span>
+                            <h1>MintCarbon</h1>
+                        </div>
+                    </a>
+                    <h2>Create Account</h2>
+                    <p>Register your wallet to get started</p>
+                </div>
+
+                <div class="login-body">
+                    <!-- Wallet Connection Section -->
+                    <div id="reg-wallet-section">
+                        <button class="connect-wallet-btn" id="reg-connect-wallet-btn" onclick="connectWallet('register')">
+                            <span class="btn-icon">🦊</span> Connect MetaMask Wallet
+                        </button>
+                    </div>
+
+                    <!-- Wallet Connected Section -->
+                    <div id="reg-wallet-connected" class="wallet-connected" style="display: none;">
+                        <div class="wallet-info">
+                            <span class="wallet-label">Connected Wallet</span>
+                            <span class="wallet-address" id="reg-wallet-address-display"></span>
+                        </div>
+                        <button class="change-wallet-btn" onclick="disconnectRegWallet()">Disconnect</button>
+                    </div>
+
+                    <!-- Role Selection -->
+                    <div class="role-selection">
+                        <label for="reg-role-dropdown">Select Your Role</label>
+                        <select id="reg-role-dropdown" class="role-dropdown" onchange="handleRegRoleChange()" disabled>
+                            <option value="">-- Select Role --</option>
+                            <option value="NGO">🌿 NGO</option>
+                            <option value="Industry">🏭 Industry</option>
+                            <option value="Panchayat">🏛️ Panchayat</option>
+                        </select>
+                    </div>
+
+                    <!-- Error/Success Message -->
+                    <div id="reg-error-message" class="error-message" style="display: none;"></div>
+                    <div id="reg-success-message" class="success-message" style="display: none;"></div>
+
+                    <!-- Register Button -->
+                    <button class="login-btn register-btn" id="register-btn" onclick="handleRegister()" disabled>
+                        Create Account
+                    </button>
+
+                    <div class="login-help">
+                        <p>Already registered? <a href="#" onclick="switchTab('login')">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="Login.js"></script>
+</body>
+</html>

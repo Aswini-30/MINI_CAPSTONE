@@ -1,0 +1,638 @@
+/* ═══════════════════════════════════════════════════════════
+   Industry Dashboard – MintCarbon
+   Design language identical to NGO / Panchayat dashboards
+   ═══════════════════════════════════════════════════════════ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  color: #2c3e50;
+  background-color: #f8f9fa;
+}
+
+/* ── Dashboard Layout ─────────────────────────────────────── */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────── */
+.sidebar {
+  width: 250px;
+  background: linear-gradient(135deg, #3227ae, #3498db);
+  color: white;
+  padding: 2rem 1rem;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar .logo {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.sidebar .logo h1 {
+  font-size: 1.4rem;
+  margin-bottom: 0.2rem;
+}
+
+.sidebar .logo p {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.sidebar nav { flex: 1; }
+
+.sidebar nav ul { list-style: none; }
+
+.sidebar nav ul li { margin-bottom: 0.4rem; }
+
+.sidebar nav ul li a {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.sidebar nav ul li a:hover,
+.sidebar nav ul li a.active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar .icon {
+  margin-right: 0.75rem;
+  font-size: 1.1rem;
+}
+
+/* Chain status indicator in sidebar */
+.sidebar-status {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  background: rgba(255,255,255,0.1);
+  border-radius: 8px;
+}
+
+.chain-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+.chain-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2ecc71;
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+
+.chain-dot.offline { background: #e74c3c; animation: none; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+#logoutBtn {
+  width: 100%;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.95rem;
+}
+
+#logoutBtn:hover { background-color: #c0392b; }
+
+/* ── Main Content ─────────────────────────────────────────── */
+.main-content {
+  flex: 1;
+  margin-left: 250px;
+  padding: 2rem;
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.main-header {
+  background: linear-gradient(135deg, #3227ae, #3498db);
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main-header h2 { font-size: 1.8rem; margin-bottom: 0.3rem; }
+.main-header p  { font-size: 0.95rem; opacity: 0.85; }
+
+.header-badges { display: flex; gap: 0.75rem; }
+
+.badge-pill {
+  background: rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+}
+
+/* ── Section ──────────────────────────────────────────────── */
+.section { display: none; }
+.section.active { display: block; }
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  color: #2c3e50;
+}
+
+/* ── Stats Grid (matches NGO) ─────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.stat-card .icon { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
+.stat-card h4    { font-size: 0.85rem; color: #7f8c8d; margin-bottom: 0.4rem; }
+.stat-number     { font-size: 2rem; font-weight: 700; color: #2c3e50; }
+
+/* ── Card ─────────────────────────────────────────────────── */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  margin-bottom: 1.5rem;
+}
+
+.card h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+/* ── Tables ───────────────────────────────────────────────── */
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+table th {
+  background: #f8f9fa;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #dee2e6;
+}
+
+table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+table tr:hover td { background: #f8f9ff; }
+
+.tx-hash {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: #3498db;
+  cursor: pointer;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #aaa;
+}
+
+.empty-state .icon { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+
+/* Status pills */
+.status-pill {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-completed { background: #d5f5e3; color: #27ae60; }
+.status-pending   { background: #fef9e7; color: #f39c12; }
+.status-failed    { background: #fde8e8; color: #e74c3c; }
+
+/* ── Filter Bar ───────────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-bar input,
+.filter-bar select {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.filter-bar input:focus,
+.filter-bar select:focus {
+  border-color: #3227ae;
+}
+
+/* ── Project Cards Grid ───────────────────────────────────── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.2rem;
+}
+
+.project-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.4rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  border-left: 4px solid #3498db;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.project-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.project-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.project-card-header h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-green { background: #d5f5e3; color: #27ae60; }
+.badge-blue  { background: #d6eaf8; color: #3498db; }
+
+.project-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+}
+
+.meta-item {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  color: #555;
+}
+
+.meta-item strong {
+  display: block;
+  font-size: 0.9rem;
+  color: #2c3e50;
+}
+
+.credits-highlight {
+  background: linear-gradient(135deg, #eaf6ff, #e8f8f0);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.credit-lbl { font-size: 0.75rem; color: #7f8c8d; }
+.credit-num { font-size: 1.4rem; font-weight: 700; color: #27ae60; }
+
+.buy-btn {
+  margin-top: auto;
+  background: linear-gradient(135deg, #3227ae, #3498db);
+  color: white;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: opacity 0.2s, transform 0.1s;
+  width: 100%;
+}
+
+.buy-btn:hover   { opacity: 0.9; transform: scale(1.01); }
+.buy-btn:active  { transform: scale(0.99); }
+
+/* Loading card */
+.loading-card {
+  background: white;
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+  color: #aaa;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  grid-column: 1 / -1;
+}
+
+.loading-card .icon { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.btn {
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: opacity 0.2s ease, transform 0.1s;
+}
+
+.btn:hover   { opacity: 0.88; }
+.btn:active  { transform: scale(0.98); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary {
+  background: linear-gradient(135deg, #3227ae, #3498db);
+  color: white;
+}
+
+.btn-danger   { background: #e74c3c; color: white; }
+.btn-outline  { background: transparent; border: 2px solid #3227ae; color: #3227ae; }
+.btn-full     { width: 100%; }
+
+/* ── Forms ────────────────────────────────────────────────── */
+.form-group { margin-bottom: 1rem; }
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.4rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus { border-color: #3227ae; }
+
+/* ── Login Overlay ────────────────────────────────────────── */
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #3227ae, #3498db);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.login-overlay.open { display: flex; }
+
+.login-card {
+  background: white;
+  border-radius: 16px;
+  width: 420px;
+  max-width: 95vw;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+
+.login-header {
+  background: linear-gradient(135deg, #3227ae, #3498db);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+}
+
+.login-header h1 { font-size: 1.8rem; margin-bottom: 0.4rem; }
+.login-header p  { opacity: 0.85; font-size: 0.95rem; }
+
+.login-body { padding: 2rem; }
+
+.login-hint {
+  font-size: 0.78rem;
+  color: #e67e22;
+  background: #fef9e7;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 1rem;
+}
+
+/* ── Modals ───────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9000;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal-card {
+  background: white;
+  border-radius: 16px;
+  width: 480px;
+  max-width: 95vw;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #3227ae, #3498db);
+  color: white;
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 { font-size: 1.1rem; }
+
+.success-header { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+.error-header   { background: linear-gradient(135deg, #c0392b, #e74c3c); }
+
+.modal-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.modal-close:hover { opacity: 1; }
+
+.modal-body { padding: 1.5rem; }
+
+.purchase-banner {
+  background: linear-gradient(135deg, #eaf6ff, #e8f8f0);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.purchase-banner h4 { font-size: 1rem; margin-bottom: 0.3rem; color: #2c3e50; }
+
+.cost-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f0f4f8;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+}
+
+.cost-box strong { font-size: 1.1rem; color: #3227ae; }
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+/* Success detail rows */
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.88rem;
+}
+
+.detail-key   { color: #7f8c8d; }
+.detail-value { font-weight: 600; font-family: monospace; word-break: break-all; }
+
+/* ── Blockchain info cards ────────────────────────────────── */
+.bc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* ── Toast ────────────────────────────────────────────────── */
+#toastContainer {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 9999;
+}
+
+.toast {
+  background: #2c3e50;
+  color: white;
+  padding: 0.75rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  animation: slideIn 0.3s ease;
+}
+
+.toast.error   { background: #e74c3c; }
+.toast.success { background: #27ae60; }
+.toast.info    { background: #3498db; }
+
+@keyframes slideIn {
+  from { transform: translateX(100px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .sidebar       { width: 200px; }
+  .main-content  { margin-left: 200px; padding: 1rem; }
+  .bc-grid       { grid-template-columns: 1fr; }
+  .main-header   { flex-direction: column; gap: 1rem; }
+}
+
+@media (max-width: 600px) {
+  .sidebar       { display: none; }
+  .main-content  { margin-left: 0; }
+}

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MintCarbon - NGO Dashboard</title>
+  <link rel="stylesheet" href="../NGO/Dashboardngo.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <div class="logo">
+        <h1>MintCarbon</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#overview" class="active"><i class="icon">📊</i> Overview</a></li>
+          <li><a href="#projects"><i class="icon">🌳</i> Project Management</a></li>
+          <li><a href="#projectList"><i class="icon">📋</i> Project List</a></li>
+          <li><a href="#upload"><i class="icon">📤</i> Data Upload</a></li>
+          <li><a href="#status"><i class="icon">📋</i> Submission Status</a></li>
+          <li><a href="#credits"><i class="icon">💚</i> Carbon Credits</a></li>
+          <li><a href="#notifications"><i class="icon">🔔</i> Notifications</a></li>
+          <li><a href="#profile"><i class="icon">👤</i> Profile</a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="logoutBtn">Logout</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="main-header">
+        <h2>Welcome to MintCarbon NGO Dashboard</h2>
+        <p>You are logged in as: <span id="userRole">Loading...</span></p>
+      </header>
+
+      <section id="overview" class="section">
+        <h3>Overview</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <i class="icon">📁</i>
+            <h4>Total Projects</h4>
+            <p class="stat-number" id="totalProjects">0</p>
+          </div>
+          <div class="stat-card">
+            <i class="icon">🌱</i>
+            <h4>Plantations Submitted</h4>
+            <p class="stat-number" id="submittedPlantations">0</p>
+          </div>
+          <div class="stat-card">
+            <i class="icon">✅</i>
+            <h4>Verified Projects</h4>
+            <p class="stat-number" id="verifiedProjects">0</p>
+          </div>
+          <div class="stat-card">
+            <i class="icon">⏳</i>
+            <h4>Pending Verification</h4>
+            <p class="stat-number" id="pendingVerification">0</p>
+          </div>
+          <div class="stat-card">
+            <i class="icon">❌</i>
+            <h4>Rejected Submissions</h4>
+            <p class="stat-number" id="rejectedSubmissions">0</p>
+          </div>
+          <div class="stat-card">
+            <i class="icon">💚</i>
+            <h4>Est. Carbon Credits</h4>
+            <p class="stat-number" id="estimatedCredits">0</p>
+            <p class="stat-unit">tCO2e</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" class="section">
+        <h3>Project Management</h3>
+        <div class="card">
+          <h4 id="projectFormTitle">Create New Project</h4>
+          <form id="projectForm">
+            <input type="hidden" id="editProjectId">
+            <div class="form-group">
+              <label for="projectName">Project Name</label>
+              <input type="text" id="projectName" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="state">State</label>
+                <select id="state" required>
+                  <option value="">Select State</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="district">District</label>
+                <select id="district" required disabled>
+                  <option value="">Select District</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="panchayat">Panchayat</label>
+                <input type="text" id="panchayat" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="projectType">Project Type</label>
+              <select id="projectType" required>
+                <option value="">Select Type</option>
+                <option value="mangrove">Mangrove</option>
+                <option value="afforestation">Afforestation</option>
+                <option value="blue-carbon">Blue Carbon</option>
+                <option value="wetland">Wetland</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="startDate">Start Date</label>
+                <input type="date" id="startDate" required>
+              </div>
+              <div class="form-group">
+                <label for="completionDate">Expected Completion</label>
+                <input type="date" id="completionDate" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="projectEstimatedCredits">Estimated CO₂ Reduction (tCO2e)</label>
+              <input type="number" id="projectEstimatedCredits" step="0.01" required>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn-primary" id="projectSubmitBtn">Create Project</button>
+              <button type="button" class="btn-secondary" id="cancelEditBtn" style="display: none;" onclick="cancelEdit()">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section id="projectList" class="section">
+        <h3>Project List</h3>
+        <div class="card">
+          <div id="projectListContainer">
+            <!-- Projects will be dynamically added here -->
+          </div>
+        </div>
+      </section>
+
+      <section id="upload" class="section">
+        <h3>Image & Data Upload</h3>
+        <div class="card">
+          <form id="uploadForm">
+            <div class="form-group">
+              <label for="projectSelect">Select Project</label>
+              <select id="projectSelect" required>
+                <option value="">Choose Project</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="submissionType">Submission Type</label>
+              <select id="submissionType" required>
+                <option value="SINGLE_STEP" selected>Single-Step Submission</option>
+              </select>
+              <small style="color: #666;">Single submission handles full verification & minting</small>
+
+            </div>
+            <div class="form-group">
+              <label for="imageUpload">Upload Images</label>
+              <input type="file" id="imageUpload" multiple accept="image/*" required>
+              <div id="imagePreview"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="gpsLat">GPS Latitude</label>
+                <input type="number" id="gpsLat" step="any" placeholder="Auto-detect or enter">
+              </div>
+              <div class="form-group">
+                <label for="gpsLng">GPS Longitude</label>
+                <input type="number" id="gpsLng" step="any" placeholder="Auto-detect or enter">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="areaCovered">Area Covered (hectares)</label>
+                <input type="number" id="areaCovered" step="0.01" required>
+              </div>
+              <div class="form-group">
+                <label for="saplingsPlanted">Saplings Planted</label>
+                <input type="number" id="saplingsPlanted" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="speciesType">Species Type</label>
+              <input type="text" id="speciesType" required>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="uploadProgress"></div>
+            </div>
+            <button type="submit" class="btn-primary">Submit Data</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="status" class="section">
+        <h3>Submission Status Tracker</h3>
+        <div class="card">
+          <table id="statusTable">
+            <thead>
+              <tr>
+                <th>Submission ID</th>
+                <th>Submitted Date</th>
+                <th>Status</th>
+                <th>Panchayat Remarks</th>
+                <th>Minting Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Status items will be dynamically added here -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="credits" class="section">
+        <h3>Carbon Credits Dashboard</h3>
+        <div id="carbonCredits" class="stats-grid">
+          <div class="stat-card">
+            <i class="icon">🌿</i>
+            <h4>Total Credits</h4>
+            <p class="stat-number" id="totalCredits">0</p>
+            <p class="stat-unit">tCO2e</p>
+          </div>
+          <div class="stat-card">
+            <i class="icon">⏳</i>
+            <h4>Pending Credits</h4>
+            <p class="stat-number" id="pendingCredits">0</p>
+            <p class="stat-unit">tCO2e</p>
+          </div>
+          <div class="stat-card">
+            <i class="icon">✅</i>
+            <h4>Minted Credits</h4>
+            <p class="stat-number" id="mintedCredits">0</p>
+            <p class="stat-unit">tCO2e</p>
+          </div>
+          <div class="stat-card">
+            <i class="icon">🌍</i>
+            <h4>CO₂ Offset</h4>
+            <p class="stat-number" id="co2Offset">0</p>
+            <p class="stat-unit">tonnes</p>
+          </div>
+          <div class="stat-card">
+            <i class="icon">🌱</i>
+            <h4>Total Saplings</h4>
+            <p class="stat-number" id="totalSaplings">0</p>
+            <p class="stat-unit">trees</p>
+          </div>
+          <div class="stat-card">
+            <i class="icon">💰</i>
+            <h4>Minting Status</h4>
+            <div class="minting-status">
+              <p>Not Minted: <span id="notMintedCount">0</span></p>
+              <p>Pending: <span id="pendingMintCount">0</span></p>
+              <p>Completed: <span id="completedMintCount">0</span></p>
+              <p>Failed: <span id="failedMintCount">0</span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="notifications" class="section">
+        <h3>Notifications & Alerts</h3>
+        <div class="card">
+          <div id="notificationList">
+            <!-- Notifications will be dynamically added here -->
+          </div>
+        </div>
+      </section>
+
+      <section id="profile" class="section">
+        <h3>Profile & Account Settings</h3>
+        <div class="card">
+          <form id="profileForm">
+            <div class="form-group">
+              <label for="ngoName">NGO Name</label>
+              <input type="text" id="ngoName" required>
+            </div>
+            <div class="form-group">
+              <label for="registrationId">Registration ID</label>
+              <input type="text" id="registrationId" required>
+            </div>
+            <div class="form-group">
+              <label for="contactDetails">Contact Details</label>
+              <textarea id="contactDetails" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="walletAddress">Wallet Address</label>
+              <input type="text" id="walletAddress" readonly>
+            </div>
+            <button type="submit" class="btn-primary">Update Profile</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="../NGO/Dashboardngo.js"></script>
+</body>
+</html>

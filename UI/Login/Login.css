@@ -1,0 +1,447 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+}
+
+/* Login Page Container */
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: #e1ece4;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Floating orbs background */
+.orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.35;
+    pointer-events: none;
+    animation: floatOrb 12s ease-in-out infinite;
+}
+.orb1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, #e1ece4, #e1ece4);
+    top: -150px; left: -150px;
+    animation-delay: 0s;
+}
+.orb2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, #e1ece4, #e1ece4);
+    bottom: -100px; right: -100px;
+    animation-delay: -4s;
+}
+.orb3 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, #e1ece4, #e1ece4);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation-delay: -8s;
+}
+
+@keyframes floatOrb {
+    0%, 100% { transform: scale(1) translate(0,0); }
+    33% { transform: scale(1.1) translate(20px, -20px); }
+    66% { transform: scale(0.95) translate(-15px, 15px); }
+}
+
+/* Tab Switcher */
+.tab-switcher {
+    display: flex;
+    background: rgba(234, 226, 226, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 5px;
+    margin-bottom: 16px;
+    width: 100%;
+    max-width: 420px;
+    backdrop-filter: blur(10px);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: rgba(16, 15, 15, 0.5);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #7a5cff, #6d55f7);
+    color: white;
+    box-shadow: 0 4px 15px rgba(92, 107, 255, 0.4);
+}
+
+/* Login Container */
+.login-container {
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Login Card */
+.login-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    backdrop-filter: blur(20px);
+    overflow: hidden;
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    width: 100%;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Login Header */
+.login-header {
+    padding: 36px 32px 28px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.logo-link {
+    text-decoration: none;
+}
+
+.logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.logo-icon {
+    font-size: 1.8rem;
+}
+
+.login-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: rgb(24, 23, 23);
+    letter-spacing: -0.5px;
+}
+
+.login-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: rgb(15, 14, 14);
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+}
+
+.login-header p {
+    color: rgba(26, 24, 24, 0.5);
+    font-size: 0.9rem;
+}
+
+/* Login Body */
+.login-body {
+    padding: 28px 32px 32px;
+}
+
+/* Connect Wallet Button */
+.connect-wallet-btn {
+    width: 100%;
+    padding: 15px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    color: rgb(24, 22, 22);
+    background: linear-gradient(135deg, #5c6bff 0%, #a855f7 100%);
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(92, 107, 255, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.connect-wallet-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(92, 107, 255, 0.5);
+}
+
+.connect-wallet-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-icon {
+    font-size: 1.2rem;
+}
+
+/* Wallet Connected Section */
+.wallet-connected {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: 14px;
+    margin-bottom: 20px;
+}
+
+.wallet-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.wallet-label {
+    font-size: 0.75rem;
+    color: #1e10b9;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+}
+
+.wallet-address {
+    font-size: 0.95rem;
+    color: rgb(18, 16, 16);
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+}
+
+.change-wallet-btn {
+    padding: 7px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    color: rgba(22, 20, 20, 0.7);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.change-wallet-btn:hover {
+    background: rgba(255,255,255,0.14);
+    color: rgb(23, 20, 20);
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: rgba(25, 23, 23, 0.6);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 13px 16px;
+    font-size: 0.95rem;
+    font-family: 'DM Sans', sans-serif;
+    color: rgb(22, 19, 19);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.form-input::placeholder {
+    color: rgba(255,255,255,0.25);
+}
+
+.form-input:focus {
+    border-color: #5c6bff;
+    background: rgba(92, 107, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(92, 107, 255, 0.15);
+}
+
+.form-input:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Role Selection */
+.role-selection {
+    margin-bottom: 20px;
+}
+
+.role-selection label {
+    display: block;
+    font-size: 0.85rem;
+    color: rgba(18, 1, 1, 0.6);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.role-dropdown {
+    width: 100%;
+    padding: 13px 16px;
+    font-size: 0.95rem;
+    font-family: 'DM Sans', sans-serif;
+    color: rgb(24, 3, 3);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(255,255,255,0.5)'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 24px;
+    outline: none;
+}
+
+.role-dropdown:focus {
+    border-color: #0e23e0;
+    background-color: rgba(19, 39, 223, 0.08);
+    box-shadow: 0 0 0 3px rgba(92, 107, 255, 0.15);
+}
+
+.role-dropdown:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.role-dropdown option {
+    background: #ebebf0;
+    color: rgb(17, 14, 14);
+    padding: 12px;
+}
+
+/* Error Message */
+.error-message {
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 10px;
+    color: #150c0c;
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+/* Success Message */
+.success-message {
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    background: rgba(69, 87, 223, 0.12);
+    border: 1px solid rgba(16, 19, 185, 0.3);
+    border-radius: 10px;
+    color: #6134d3;
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+/* Login Button */
+.login-btn {
+    width: 100%;
+    padding: 15px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    color: rgb(20, 15, 15);
+    background: linear-gradient(135deg, #3710b9 0%, #3b82f6 100%);
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(16, 19, 185, 0.3);
+    margin-bottom: 18px;
+}
+
+.login-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(33, 16, 185, 0.45);
+}
+
+.login-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.login-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Register Button variant */
+.register-btn {
+    background: linear-gradient(135deg, #5c6bff 0%, #a855f7 100%);
+    box-shadow: 0 4px 20px rgba(92, 107, 255, 0.3);
+}
+
+.register-btn:hover:not(:disabled) {
+    box-shadow: 0 8px 25px rgba(92, 107, 255, 0.45);
+}
+
+/* Login Help */
+.login-help {
+    text-align: center;
+}
+
+.login-help p {
+    color: rgba(10, 10, 10, 0.4);
+    font-size: 0.875rem;
+}
+
+.login-help a {
+    color: #400ed7;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.login-help a:hover {
+    color: #0a051f;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .login-container { max-width: 100%; }
+    .login-header { padding: 28px 20px 22px; }
+    .login-body { padding: 22px 20px 26px; }
+    .tab-switcher { max-width: 100%; }
+}

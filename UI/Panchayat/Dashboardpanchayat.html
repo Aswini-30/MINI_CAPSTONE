@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MintCarbon - Panchayat Dashboard</title>
+  <link rel="stylesheet" href="../NGO/Dashboardngo.css">
+  <style>
+    /* Header - Same as NGO Dashboard */
+    .main-header {
+      background: linear-gradient(135deg, #3227ae, #3498db);
+      color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    
+    .main-header h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .main-header p {
+      font-size: 1.1rem;
+    }
+    
+    /* Sidebar - Move notification and profile to sidebar */
+    .sidebar-top-actions {
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .sidebar-notification {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.15);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+    }
+    
+    .sidebar-notification:hover {
+      background: rgba(255,255,255,0.25);
+    }
+    
+    .sidebar-notification-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: white;
+      font-size: 0.9rem;
+    }
+    
+    .sidebar-badge {
+      background: #e74c3c;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: bold;
+      min-width: 20px;
+      height: 20px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+    }
+    
+    .sidebar-badge.hidden {
+      display: none;
+    }
+    
+    .sidebar-profile {
+      position: relative;
+    }
+    
+    .sidebar-profile-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.15);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    
+    .sidebar-profile-btn:hover {
+      background: rgba(255,255,255,0.25);
+    }
+    
+    .sidebar-dropdown {
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      display: none;
+      margin-bottom: 5px;
+    }
+    
+    .sidebar-dropdown.show {
+      display: block;
+    }
+    
+    .sidebar-dropdown a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      color: #2c3e50;
+      text-decoration: none;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .sidebar-dropdown a:last-child {
+      border-bottom: none;
+      color: #e74c3c;
+    }
+    
+    .sidebar-dropdown a:hover {
+      background: #f8f9fa;
+    }
+    
+    /* Tab Navigation */
+    .tab-nav {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid #e9ecef;
+      padding-bottom: 0;
+    }
+    
+    .tab-btn {
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #7f8c8d;
+      border-radius: 8px 8px 0 0;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .tab-btn:hover {
+      color: #3227ae;
+      background: #f8f9fa;
+    }
+    
+    .tab-btn.active {
+      color: #3227ae;
+      background: #f8f9fa;
+    }
+    
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #3227ae;
+      border-radius: 3px 3px 0 0;
+    }
+    
+    /* Project Cards */
+    .project-card {
+      background: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      border-left: 4px solid #3498db;
+      transition: all 0.3s ease;
+    }
+    
+    .project-card:hover {
+      background: #fff;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .project-card.approved {
+      border-left-color: #27ae60;
+    }
+    
+    .project-card.rejected {
+      border-left-color: #e74c3c;
+    }
+    
+    .project-card h5 {
+      color: #3d27ae;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+    
+    .project-card p {
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: #2c3e50;
+    }
+    
+    .project-card .wallet-address {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: #3498db;
+      word-break: break-all;
+      background: #fff;
+      padding: 5px 10px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 5px;
+    }
+    
+    .project-card .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    
+    .project-card .status-badge.pending {
+      background: #fff3e0;
+      color: #f39c12;
+    }
+    
+    .project-card .status-badge.approved {
+      background: #e8f5e9;
+      color: #27ae60;
+    }
+    
+    .project-card .status-badge.rejected {
+      background: #ffebee;
+      color: #e74c3c;
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    
+    .btn-approve {
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-approve:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
+    }
+    
+    .btn-reject {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-reject:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+    }
+    
+    /* Rejection Reason */
+    .rejection-reason {
+      background: #ffebee;
+      padding: 10px 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+      border-left: 3px solid #e74c3c;
+    }
+    
+    .rejection-reason strong {
+      color: #c0392b;
+      font-size: 0.85rem;
+    }
+    
+    .rejection-reason p {
+      color: #e74c3c;
+      margin: 5px 0 0 0;
+      font-size: 0.9rem;
+    }
+    
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    
+    .modal-overlay.show {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .modal-header h3 {
+      color: #e74c3c;
+      font-size: 1.3rem;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #7f8c8d;
+    }
+    
+    .modal-body textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      resize: vertical;
+      min-height: 120px;
+    }
+    
+    .modal-footer {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+    }
+    
+    .btn-cancel {
+      background: #f8f9fa;
+      color: #2c3e50;
+      border: 2px solid #e9ecef;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    
+    .btn-confirm-reject {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #7f8c8d;
+    }
+    
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+    
+    .empty-state h4 {
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+    
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 500;
+      z-index: 3000;
+      max-width: 350px;
+    }
+    
+    .toast.success {
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+    }
+    
+    .toast.error {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+    
+    .ipfs-link {
+      color: #3498db;
+      text-decoration: none;
+    }
+    
+    .project-description {
+      color: #555;
+      font-size: 0.9rem;
+      margin: 10px 0;
+      padding: 10px;
+      background: #fff;
+      border-radius: 6px;
+    }
+    
+    /* Notifications Section */
+    #notifications .notification-item {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      border-left: 4px solid #3498db;
+      transition: background-color 0.3s ease;
+    }
+    
+    #notifications .notification-item.unread {
+      background-color: #e8f4fd;
+      border-left-color: #3498db;
+    }
+    
+    #notifications .notification-item:hover {
+      background-color: #f8f9fa;
+    }
+    
+    #notifications .notification-item p {
+      margin-bottom: 0.5rem;
+      color: #2c3e50;
+    }
+    
+    #notifications .notification-item small {
+      color: #7f8c8d;
+    }
+    
+    /* Profile Section */
+    #profile .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    #profile .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    
+    #profile .form-group input,
+    #profile .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    
+    #profile .form-group input:focus,
+    #profile .form-group textarea:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+    
+    #profile .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    #profile .btn-primary {
+      background: linear-gradient(135deg, #3227ae, #3498db);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.3s ease;
+    }
+    
+    #profile .btn-primary:hover {
+      transform: translateY(-2px);
+    }
+    
+    #profile .wallet-display {
+      background: #f8f9fa;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      color: #3498db;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar - Same as NGO Dashboard with notification and profile -->
+    <aside class="sidebar">
+  <div class="logo">
+    <h1>MintCarbon</h1>
+  </div>
+
+  <nav>
+    <ul>
+      <li>
+        <a href="#overview" class="active" onclick="switchTab('overview')">
+          <span class="icon">📊</span> Overview
+        </a>
+      </li>
+
+      <li>
+        <a href="#verification" onclick="switchTab('verification')">
+          <span class="icon">✓</span> Verification
+        </a>
+      </li>
+
+      <li>
+        <a href="#approved" onclick="switchTab('approved')">
+          <span class="icon">✓</span> Approved
+        </a>
+      </li>
+
+      <li>
+        <a href="#rejected" onclick="switchTab('rejected')">
+          <span class="icon">✗</span> Rejected
+        </a>
+      </li>
+
+      <!-- 🔔 Notification (Below Rejected) -->
+      <li>
+        <a href="#notifications" onclick="switchTab('notifications')" class="notification-link">
+          <span class="icon">🔔</span> Notifications
+          <span id="sidebarBadge" class="sidebar-badge hidden">0</span>
+        </a>
+      </li>
+
+      <!-- 👤 Profile (Only Profile, No Dropdown) -->
+      <li>
+        <a href="#profile" onclick="showProfile()">
+          <span class="icon">👤</span> Profile
+        </a>
+      </li>
+
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button id="logoutBtn" onclick="logout()">Logout</button>
+  </div>
+</aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <div class="main-header">
+        <h2>Panchayat Verification Dashboard</h2>
+        <p>Verify and manage project submissions</p>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('verification')">
+          Pending <span class="count" id="pendingCount">0</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('approved')">
+          Approved <span class="count" id="approvedCount">0</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('rejected')">
+          Rejected <span class="count" id="rejectedCount">0</span>
+        </button>
+      </div>
+
+      <!-- Overview Section -->
+      <section id="overview" class="section" style="display: block;">
+        <h3>Overview</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <i class="icon">📋</i>
+            <h4>Pending Verification</h4>
+            <p class="stat-number" id="overviewPending">0</p>
+          </div>
+          <div class="stat-card">
+            <i class="icon">✓</i>
+            <h4>Approved Projects</h4>
+            <p class="stat-number" id="overviewApproved">0</p>
+          </div>
+          <div class="stat-card">
+            <i class="icon">✗</i>
+            <h4>Rejected Projects</h4>
+            <p class="stat-number" id="overviewRejected">0</p>
+          </div>
+          <div class="stat-card">
+            <i class="icon">🌱</i>
+            <h4>Total Projects</h4>
+            <p class="stat-number" id="overviewTotal">0</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pending Section -->
+      <section id="verification" class="section">
+        <h3>Pending Submissions</h3>
+        <div class="card">
+          <div id="pendingProjects">
+            <div class="empty-state">
+              <div class="empty-state-icon">📋</div>
+              <h4>No Pending Submissions</h4>
+              <p>There are no projects waiting for verification.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Approved Section -->
+      <section id="approved" class="section">
+        <h3>Approved Submissions</h3>
+        <div class="card">
+          <div id="approvedProjects">
+            <div class="empty-state">
+              <div class="empty-state-icon">✓</div>
+              <h4>No Approved Submissions</h4>
+              <p>There are no approved projects yet.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Rejected Section -->
+      <section id="rejected" class="section">
+        <h3>Rejected Submissions</h3>
+        <div class="card">
+          <div id="rejectedProjects">
+            <div class="empty-state">
+              <div class="empty-state-icon">✗</div>
+              <h4>No Rejected Submissions</h4>
+              <p>There are no rejected projects.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notifications Section -->
+      <section id="notifications" class="section">
+        <h3>Notifications & Alerts</h3>
+        <div class="card">
+          <div id="notificationList">
+            <!-- Notifications will be dynamically added here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Profile Section -->
+      <section id="profile" class="section">
+        <h3>Profile & Account Settings</h3>
+        <div class="card">
+          <form id="profileForm">
+            <div class="form-group">
+              <label for="panchayatName">Panchayat Name</label>
+              <input type="text" id="panchayatName" required>
+            </div>
+            <div class="form-group">
+              <label for="state">State</label>
+              <input type="text" id="panchayatState" required>
+            </div>
+            <div class="form-group">
+              <label for="district">District</label>
+              <input type="text" id="panchayatDistrict" required>
+            </div>
+            <div class="form-group">
+              <label for="contactDetails">Contact Details</label>
+              <textarea id="panchayatContact" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="walletAddress">Wallet Address</label>
+              <div class="wallet-display" id="panchayatWallet"></div>
+            </div>
+            <button type="submit" class="btn-primary">Update Profile</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Rejection Modal -->
+  <div class="modal-overlay" id="rejectionModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Reject Project</h3>
+        <button class="modal-close" onclick="closeRejectModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Please provide a reason for rejecting this project:</p>
+        <textarea id="rejectionReason" placeholder="Enter rejection reason..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeRejectModal()">Cancel</button>
+        <button class="btn-confirm-reject" onclick="confirmReject()">Reject Project</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="Dashboardpanchayat.js"></script>
+</body>
+</html>
