@@ -249,11 +249,13 @@ function filterProjects() {
 
 function renderProjects(list) {
   const grid = document.getElementById('marketplaceGrid');
-  if (!list.length) {
+  // Hide projects with no remaining credits (fully purchased)
+  const available = list.filter(p => Number(p.creditsAvailable || 0) > 0);
+  if (!available.length) {
     grid.innerHTML = '<div class="loading-card"><i class="icon">🔍</i><p>No projects found</p></div>';
     return;
   }
-  grid.innerHTML = list.map(p => {
+  grid.innerHTML = available.map(p => {
     const projectNameSafe = (p.projectName || p.title || 'Project').replace(/'/g, "\\'");
     return `
     <div class="project-card">

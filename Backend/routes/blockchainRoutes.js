@@ -25,6 +25,10 @@ router.post('/purchase-credits', controller.purchaseCredits);
 router.post('/credits/purchase', controller.purchaseCredits);
 router.get('/credits/purchases/:buyerAddress', controller.getPurchaseHistory);
 
+// ─── Aliases used by Industry frontend ───────────────────────────────────────
+router.get('/purchase-history/:buyerAddress', controller.getPurchaseHistory);
+router.get('/credit-price', controller.getCreditPrice);
+
 // ─── Debug/Contracts ─────────────────────────────────────────────────────────
 router.get('/contracts', async (req, res) => {
   try {
