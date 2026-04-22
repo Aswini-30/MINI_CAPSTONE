@@ -167,15 +167,29 @@ const getVerifiedProjects = async (req, res) => {
     const projects = await Project.find({ 
       status: { $in: [PROJECT_STATUS.INITIAL_APPROVED, PROJECT_STATUS.COMPLETED] }
     })
-    .select('title name projectName state district projectType saplingsPlanted carbonAmount creditsIssued estimatedCredits status blockchainProjectId verifiedAt')
+    .select('title name projectName state district projectType saplingsPlanted carbonAmount creditsIssued estimatedCredits creditsAvailable status blockchainProjectId verifiedAt')
     .sort({ verifiedAt: -1 });
     
     console.log(`DEBUG: Filtered (with blockchainProjectId): ${projects.length}`);
     console.log('Sample project:', projects[0]);
 
+    // Sum credits already purchased for each project
+    const Purchase = require('../models/Purchase');
+    const projectIds = projects.map(p => p._id);
+    const purchaseSums = await Purchase.aggregate([
+      { $match: { projectId: { $in: projectIds }, status: 'COMPLETED' } },
+      { $group: { _id: '$projectId', totalPurchased: { $sum: '$creditsAmount' } } }
+    ]);
+    const purchasedMap = {};
+    purchaseSums.forEach(r => { purchasedMap[r._id.toString()] = r.totalPurchased; });
+
     // Map fields for frontend compatibility (Industry dashboard expects specific fields)
     const marketplaceProjects = projects.map(project => {
       const obj = project.toObject();
+      // Always derive remaining from original total minus sum of all purchases
+      const originalTotal = obj.creditsIssued || obj.carbonAmount || obj.estimatedCredits || 0;
+      const alreadyPurchased = purchasedMap[obj._id.toString()] || 0;
+      const remainingCredits = Math.max(0, originalTotal - alreadyPurchased);
       return {
         _id: obj._id.toString(),
         projectName: obj.name || obj.projectName || obj.title || 'Unnamed Project',
@@ -184,17 +198,20 @@ const getVerifiedProjects = async (req, res) => {
         district: obj.district || 'N/A',
         projectType: obj.projectType || 'Carbon Project',
         saplingsPlanted: obj.saplingsPlanted || 0,
-        creditsAvailable: obj.creditsIssued || obj.carbonAmount || obj.estimatedCredits || 0,  // Frontend expects creditsAvailable
-        carbonCredits: obj.creditsIssued || obj.carbonAmount || obj.estimatedCredits || 0,
+        creditsAvailable: remainingCredits,
+        carbonCredits: originalTotal,
         status: obj.status,
         projectIdOnChain: obj.blockchainProjectId,
         verifiedAt: obj.verifiedAt,
-        // Add extras for display
         description: `Verified ${obj.projectType} project in ${obj.state}. ${obj.saplingsPlanted || 0} saplings planted.`
       };
     });
 
-    console.log(`✅ Verified projects loaded: ${marketplaceProjects.length} (filtered by blockchainProjectId)`);
+    // Remove projects with no credits remaining (fully purchased)
+    const availableForSale = marketplaceProjects.filter(p => p.creditsAvailable > 0);
+    console.log(`✅ Verified projects loaded: ${availableForSale.length} (${marketplaceProjects.length - availableForSale.length} fully sold out)`);
+    marketplaceProjects.length = 0;
+    availableForSale.forEach(p => marketplaceProjects.push(p));
 
     res.status(200).json({
       success: true,

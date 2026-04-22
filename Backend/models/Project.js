@@ -83,6 +83,12 @@ const projectSchema = new mongoose.Schema({
   verifiedBy: String,
   verifiedAt: Date,
   
+  // 🔧 CREDITS AVAILABLE - decremented on each purchase
+  creditsAvailable: {
+    type: Number,
+    default: null
+  },
+
   // 🔧 BLOCKCHAIN FIELDS - FIXED FOR MARKETPLACE
   blockchainProjectId: {
     type: Number,

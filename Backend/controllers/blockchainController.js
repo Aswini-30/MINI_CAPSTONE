@@ -278,12 +278,25 @@ const purchaseCredits = async (req, res) => {
     if (!proj) return res.status(404).json({ success: false, error: 'Project not found' });
     if (proj.status !== 'COMPLETED') return res.status(400).json({ success: false, error: 'Project is not yet completed/verified' });
 
+    // ── Resolve current creditsAvailable (seed from carbonAmount/creditsIssued on first purchase)
+    const baseCredits = proj.creditsIssued || proj.carbonAmount || proj.estimatedCredits || 0;
+    if (proj.creditsAvailable === null || proj.creditsAvailable === undefined) {
+      proj.creditsAvailable = baseCredits;
+    }
+    const amt = Math.round(creditsAmount);
+    if (proj.creditsAvailable < amt) {
+      return res.status(400).json({ success: false, error: `Only ${proj.creditsAvailable} credits remaining for this project` });
+    }
+
     const creditPrice = await contracts.CarbonCreditSystem.methods.creditPrice().call();
-    const amt         = Math.round(creditsAmount);
     const totalValue  = BigInt(creditPrice) * BigInt(amt);
 
     const method  = contracts.CarbonCreditSystem.methods.purchaseCredits(amt);
     const result  = await sendTx(method, buyerPrivateKey, 'purchaseCredits', totalValue);
+
+    // ── Deduct credits from project and mark fully sold if exhausted
+    proj.creditsAvailable = proj.creditsAvailable - amt;
+    await proj.save();
 
     const purchase = await Purchase.create({
       projectId:      proj._id,
